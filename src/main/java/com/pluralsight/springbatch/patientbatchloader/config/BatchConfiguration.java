@@ -49,7 +49,7 @@ public class BatchConfiguration implements BatchConfigurer {
 
     @Override
     public JobExplorer getJobExplorer() throws Exception {
-        return this.getJobExplorer();
+        return this.jobExplorer;
     }
 
     protected JobLauncher createJobLauncher() throws Exception {

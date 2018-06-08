@@ -45,4 +45,6 @@ server:
 # ===================================================================
 # Application specific properties
 # ===================================================================
-
+application:
+    batch:
+        inputPath: /Users/Bear/Desktop/Coding/Sandbox/LearningSpringBatch/data
