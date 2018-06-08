@@ -51,4 +51,4 @@ management:
 
 application:
     batch:
-        inputPath: c:/demo/patient-batch-loader/data
+        inputPath: /Users/Bear/Desktop/Coding/Sandbox/LearningSpringBatch/data

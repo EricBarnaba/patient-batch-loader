@@ -1,8 +1,5 @@
 package com.pluralsight.springbatch.patientbatchloader.config;
 
-import javax.annotation.PostConstruct;
-import javax.sql.DataSource;
-
 import org.springframework.batch.core.configuration.annotation.BatchConfigurer;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.explore.JobExplorer;
@@ -16,13 +13,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 
-/**	
- * Main configuration class for Spring Batch dependencies.
- *
- * The @EnableBatchProcessing annotation gives you access to a variety of beans
- * related to batch processing. DefaultBatchConfigurer provides a default
- * strategy for the initialization of Spring Batch dependencies.
- */
+import javax.annotation.PostConstruct;
+import javax.sql.DataSource;
+
 @Component
 @EnableBatchProcessing
 public class BatchConfiguration implements BatchConfigurer {
@@ -45,28 +38,18 @@ public class BatchConfiguration implements BatchConfigurer {
     }
 
     @Override
+    public PlatformTransactionManager getTransactionManager() throws Exception {
+        return this.batchTransactionManager;
+    }
+
+    @Override
     public JobLauncher getJobLauncher() throws Exception {
         return this.jobLauncher;
     }
 
     @Override
     public JobExplorer getJobExplorer() throws Exception {
-        return this.jobExplorer;
-    }
-
-    @Override
-    public PlatformTransactionManager getTransactionManager() {
-        return this.batchTransactionManager;
-    }
-
-    @PostConstruct
-    public void afterPropertiesSet() throws Exception {
-        this.jobRepository = createJobRepository();
-        JobExplorerFactoryBean jobExplorerFactoryBean = new JobExplorerFactoryBean();
-        jobExplorerFactoryBean.setDataSource(this.batchDataSource);
-        jobExplorerFactoryBean.afterPropertiesSet();
-        this.jobExplorer = jobExplorerFactoryBean.getObject();
-        this.jobLauncher = createJobLauncher();
+        return this.getJobExplorer();
     }
 
     protected JobLauncher createJobLauncher() throws Exception {
@@ -83,4 +66,16 @@ public class BatchConfiguration implements BatchConfigurer {
         factory.afterPropertiesSet();
         return factory.getObject();
     }
+
+    @PostConstruct
+    public void afterPropertiesSet() throws Exception {
+        this.jobRepository = createJobRepository();
+        JobExplorerFactoryBean jobExplorerFactoryBean = new JobExplorerFactoryBean();
+        jobExplorerFactoryBean.setDataSource(this.batchDataSource);
+        jobExplorerFactoryBean.afterPropertiesSet();
+        this.jobExplorer = jobExplorerFactoryBean.getObject();
+        this.jobLauncher = createJobLauncher();
+    }
+
+
 }
